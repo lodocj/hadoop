@@ -609,7 +609,9 @@ public class WebHdfsFileSystem extends FileSystem
       boolean pathAlreadyEncoded = false;
       try {
         fspathUriDecoded = URLDecoder.decode(fspathUri.getPath(), "UTF-8");
-        pathAlreadyEncoded = true;
+        //Modify by cj
+        //set to false
+        pathAlreadyEncoded = false;
       } catch (IllegalArgumentException ex) {
         LOG.trace("Cannot decode URL encoded file", ex);
       }
