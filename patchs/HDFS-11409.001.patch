@@ -1,0 +1,27 @@
+diff --git a/hadoop-hdfs-project/hadoop-hdfs-client/src/main/java/org/apache/hadoop/hdfs/protocol/DatanodeInfo.java b/hadoop-hdfs-project/hadoop-hdfs-client/src/main/java/org/apache/hadoop/hdfs/protocol/DatanodeInfo.java
+index 41735b1..acbcffa 100644
+--- a/hadoop-hdfs-project/hadoop-hdfs-client/src/main/java/org/apache/hadoop/hdfs/protocol/DatanodeInfo.java
++++ b/hadoop-hdfs-project/hadoop-hdfs-client/src/main/java/org/apache/hadoop/hdfs/protocol/DatanodeInfo.java
+@@ -51,7 +51,7 @@
+   private long lastUpdate;
+   private long lastUpdateMonotonic;
+   private int xceiverCount;
+-  private String location = NetworkTopology.DEFAULT_RACK;
++  private volatile String location = NetworkTopology.DEFAULT_RACK;
+   private String softwareVersion;
+   private List<String> dependentHostNames = new LinkedList<>();
+   private String upgradeDomain;
+@@ -293,11 +293,11 @@ public void setXceiverCount(int xceiverCount) {
+ 
+   /** network location */
+   @Override
+-  public synchronized String getNetworkLocation() {return location;}
++  public String getNetworkLocation() {return location;}
+ 
+   /** Sets the network location */
+   @Override
+-  public synchronized void setNetworkLocation(String location) {
++  public void setNetworkLocation(String location) {
+     this.location = NodeBase.normalize(location);
+   }
+ 
