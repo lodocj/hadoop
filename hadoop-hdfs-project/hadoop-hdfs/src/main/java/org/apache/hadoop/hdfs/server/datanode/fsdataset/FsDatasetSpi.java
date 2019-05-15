@@ -76,15 +76,15 @@ public interface FsDatasetSpi<V extends FsVolumeSpi> extends FSDatasetMBean {
     public static Factory<?> getFactory(Configuration conf) {
       @SuppressWarnings("rawtypes")
       final Class<? extends Factory> clazz = conf.getClass(
-          DFSConfigKeys.DFS_DATANODE_FSDATASET_FACTORY_KEY,
-          FsDatasetFactory.class,
-          Factory.class);
+              DFSConfigKeys.DFS_DATANODE_FSDATASET_FACTORY_KEY,
+              FsDatasetFactory.class,
+              Factory.class);
       return ReflectionUtils.newInstance(clazz, conf);
     }
 
     /** Create a new object. */
     public abstract D newInstance(DataNode datanode, DataStorage storage,
-        Configuration conf) throws IOException;
+                                  Configuration conf) throws IOException;
 
     /** Does the factory create simulated objects? */
     public boolean isSimulated() {
@@ -105,8 +105,8 @@ public interface FsDatasetSpi<V extends FsVolumeSpi> extends FSDatasetMBean {
    * @param nsInfos       Namespace information for the new volume.
    */
   public void addVolume(
-      final StorageLocation location,
-      final List<NamespaceInfo> nsInfos) throws IOException;
+          final StorageLocation location,
+          final List<NamespaceInfo> nsInfos) throws IOException;
 
   /**
    * Removes a collection of volumes from FsDataset.
@@ -125,7 +125,7 @@ public interface FsDatasetSpi<V extends FsVolumeSpi> extends FSDatasetMBean {
 
   /** @return one or more storage reports for attached volumes. */
   public StorageReport[] getStorageReports(String bpid)
-      throws IOException;
+          throws IOException;
 
   /** @return the volume that contains a replica of the block. */
   public V getVolume(ExtendedBlock b);
@@ -152,7 +152,7 @@ public interface FsDatasetSpi<V extends FsVolumeSpi> extends FSDatasetMBean {
    * as corrupted.
    */
   public void checkAndUpdate(String bpid, long blockId, File diskFile,
-      File diskMetaFile, FsVolumeSpi vol) throws IOException;
+                             File diskMetaFile, FsVolumeSpi vol) throws IOException;
 
   /**
    * @param b - the block
@@ -161,7 +161,7 @@ public interface FsDatasetSpi<V extends FsVolumeSpi> extends FSDatasetMBean {
    * @throws IOException
    */
   public LengthInputStream getMetaDataInputStream(ExtendedBlock b
-      ) throws IOException;
+  ) throws IOException;
 
   /**
    * Returns the specified block's on-disk length (excluding metadata)
@@ -187,7 +187,7 @@ public interface FsDatasetSpi<V extends FsVolumeSpi> extends FSDatasetMBean {
    * @return the generation stamp stored with the block.
    */
   public Block getStoredBlock(String bpid, long blkid) throws IOException;
-  
+
   /**
    * Returns an input stream at specified offset of the specified block
    * @param b block
@@ -197,7 +197,7 @@ public interface FsDatasetSpi<V extends FsVolumeSpi> extends FSDatasetMBean {
    * @throws IOException
    */
   public InputStream getBlockInputStream(ExtendedBlock b, long seekOffset)
-            throws IOException;
+          throws IOException;
 
   /**
    * Returns an input stream at specified offset of the specified block
@@ -207,31 +207,31 @@ public interface FsDatasetSpi<V extends FsVolumeSpi> extends FSDatasetMBean {
    * @throws IOException
    */
   public ReplicaInputStreams getTmpInputStreams(ExtendedBlock b, long blkoff,
-      long ckoff) throws IOException;
+                                                long ckoff) throws IOException;
 
   /**
    * Creates a temporary replica and returns the meta information of the replica
-   * 
+   *
    * @param b block
    * @return the meta info of the replica which is being written to
    * @throws IOException if an error occurs
    */
   public ReplicaHandler createTemporary(StorageType storageType,
-      ExtendedBlock b) throws IOException;
+                                        ExtendedBlock b) throws IOException;
 
   /**
    * Creates a RBW replica and returns the meta info of the replica
-   * 
+   *
    * @param b block
    * @return the meta info of the replica which is being written to
    * @throws IOException if an error occurs
    */
   public ReplicaHandler createRbw(StorageType storageType,
-      ExtendedBlock b, boolean allowLazyPersist) throws IOException;
+                                  ExtendedBlock b, boolean allowLazyPersist) throws IOException;
 
   /**
    * Recovers a RBW replica and returns the meta info of the replica
-   * 
+   *
    * @param b block
    * @param newGS the new generation stamp for the replica
    * @param minBytesRcvd the minimum number of bytes that the replica could have
@@ -240,7 +240,7 @@ public interface FsDatasetSpi<V extends FsVolumeSpi> extends FSDatasetMBean {
    * @throws IOException if an error occurs
    */
   public ReplicaHandler recoverRbw(ExtendedBlock b,
-      long newGS, long minBytesRcvd, long maxBytesRcvd) throws IOException;
+                                   long newGS, long minBytesRcvd, long maxBytesRcvd) throws IOException;
 
   /**
    * Covert a temporary replica to a RBW.
@@ -248,11 +248,11 @@ public interface FsDatasetSpi<V extends FsVolumeSpi> extends FSDatasetMBean {
    * @return the result RBW
    */
   public ReplicaInPipelineInterface convertTemporaryToRbw(
-      ExtendedBlock temporary) throws IOException;
+          ExtendedBlock temporary) throws IOException;
 
   /**
    * Append to a finalized replica and returns the meta info of the replica
-   * 
+   *
    * @param b block
    * @param newGS the new generation stamp for the replica
    * @param expectedBlockLen the number of bytes the replica is expected to have
@@ -260,12 +260,12 @@ public interface FsDatasetSpi<V extends FsVolumeSpi> extends FSDatasetMBean {
    * @throws IOException
    */
   public ReplicaHandler append(ExtendedBlock b, long newGS,
-      long expectedBlockLen) throws IOException;
+                               long expectedBlockLen) throws IOException;
 
   /**
    * Recover a failed append to a finalized replica
    * and returns the meta info of the replica
-   * 
+   *
    * @param b block
    * @param newGS the new generation stamp for the replica
    * @param expectedBlockLen the number of bytes the replica is expected to have
@@ -273,12 +273,12 @@ public interface FsDatasetSpi<V extends FsVolumeSpi> extends FSDatasetMBean {
    * @throws IOException
    */
   public ReplicaHandler recoverAppend(
-      ExtendedBlock b, long newGS, long expectedBlockLen) throws IOException;
-  
+          ExtendedBlock b, long newGS, long expectedBlockLen) throws IOException;
+
   /**
    * Recover a failed pipeline close
    * It bumps the replica's generation stamp and finalize it if RBW replica
-   * 
+   *
    * @param b block
    * @param newGS the new generation stamp for the replica
    * @param expectedBlockLen the number of bytes the replica is expected to have
@@ -286,8 +286,8 @@ public interface FsDatasetSpi<V extends FsVolumeSpi> extends FSDatasetMBean {
    * @throws IOException
    */
   public String recoverClose(ExtendedBlock b, long newGS, long expectedBlockLen
-      ) throws IOException;
-  
+  ) throws IOException;
+
   /**
    * Finalizes the block previously opened for writing using writeToBlock.
    * The block size is what is in the parameter b and it must match the amount
@@ -339,14 +339,14 @@ public interface FsDatasetSpi<V extends FsVolumeSpi> extends FSDatasetMBean {
    * @throws FileNotFoundException             If the block file is not found or there 
    *                                              was an error locating it.
    * @throws EOFException                      If the replica length is too short.
-   * 
+   *
    * @throws IOException                       May be thrown from the methods called. 
    */
   public void checkBlock(ExtendedBlock b, long minLength, ReplicaState state)
-      throws ReplicaNotFoundException, UnexpectedReplicaStateException,
-      FileNotFoundException, EOFException, IOException;
-      
-  
+          throws ReplicaNotFoundException, UnexpectedReplicaStateException,
+          FileNotFoundException, EOFException, IOException;
+
+
   /**
    * Is the block valid?
    * @return - true if the specified block is valid
@@ -389,10 +389,10 @@ public interface FsDatasetSpi<V extends FsVolumeSpi> extends FSDatasetMBean {
    */
   public boolean isCached(String bpid, long blockId);
 
-    /**
-     * Check if all the data directories are healthy
-     * @return A set of unhealthy data directories.
-     */
+  /**
+   * Check if all the data directories are healthy
+   * @return A set of unhealthy data directories.
+   */
   public Set<File> checkDataDir();
 
   /**
@@ -409,7 +409,7 @@ public interface FsDatasetSpi<V extends FsVolumeSpi> extends FSDatasetMBean {
    * @throws IOException
    */
   public void adjustCrcChannelPosition(ExtendedBlock b,
-      ReplicaOutputStreams outs, int checksumSize) throws IOException;
+                                       ReplicaOutputStreams outs, int checksumSize) throws IOException;
 
   /**
    * Checks how many valid storage volumes there are in the DataNode.
@@ -429,14 +429,14 @@ public interface FsDatasetSpi<V extends FsVolumeSpi> extends FSDatasetMBean {
    * null if data-node does not have the replica.
    */
   public ReplicaRecoveryInfo initReplicaRecovery(RecoveringBlock rBlock
-      ) throws IOException;
+  ) throws IOException;
 
   /**
    * Update replica's generation stamp and length and finalize it.
    * @return the ID of storage that stores the block
    */
   public String updateReplicaUnderRecovery(ExtendedBlock oldBlock,
-      long recoveryId, long newBlockId, long newLength) throws IOException;
+                                           long recoveryId, long newBlockId, long newLength) throws IOException;
 
   /**
    * add new block pool ID
@@ -444,13 +444,13 @@ public interface FsDatasetSpi<V extends FsVolumeSpi> extends FSDatasetMBean {
    * @param conf Configuration
    */
   public void addBlockPool(String bpid, Configuration conf) throws IOException;
-  
+
   /**
    * Shutdown and remove the block pool from underlying storage.
    * @param bpid Block pool Id to be removed
    */
   public void shutdownBlockPool(String bpid) ;
-  
+
   /**
    * Deletes the block pool directories. If force is false, directories are 
    * deleted only if no block files exist for the block pool. If force 
@@ -463,24 +463,24 @@ public interface FsDatasetSpi<V extends FsVolumeSpi> extends FSDatasetMBean {
    * @throws IOException
    */
   public void deleteBlockPool(String bpid, boolean force) throws IOException;
-  
+
   /**
    * Get {@link BlockLocalPathInfo} for the given block.
    */
   public BlockLocalPathInfo getBlockLocalPathInfo(ExtendedBlock b
-      ) throws IOException;
+  ) throws IOException;
 
   /**
    * Get a {@link HdfsBlocksMetadata} corresponding to the list of blocks in 
    * <code>blocks</code>.
-   * 
+   *
    * @param bpid pool to query
    * @param blockIds List of block ids for which to return metadata
    * @return metadata Metadata for the list of blocks
    * @throws IOException
    */
   public HdfsBlocksMetadata getHdfsBlocksMetadata(String bpid,
-      long[] blockIds) throws IOException;
+                                                  long[] blockIds) throws IOException;
 
   /**
    * Enable 'trash' for the given dataset. When trash is enabled, files are
@@ -514,25 +514,25 @@ public interface FsDatasetSpi<V extends FsVolumeSpi> extends FSDatasetMBean {
    * submit a sync_file_range request to AsyncDiskService
    */
   public void submitBackgroundSyncFileRangeRequest(final ExtendedBlock block,
-      final FileDescriptor fd, final long offset, final long nbytes,
-      final int flags);
+                                                   final FileDescriptor fd, final long offset, final long nbytes,
+                                                   final int flags);
 
   /**
    * Callback from RamDiskAsyncLazyPersistService upon async lazy persist task end
    */
-   public void onCompleteLazyPersist(String bpId, long blockId,
-      long creationTime, File[] savedFiles, V targetVolume);
+  public void onCompleteLazyPersist(String bpId, long blockId,
+                                    long creationTime, File[] savedFiles, V targetVolume);
 
-   /**
-    * Callback from RamDiskAsyncLazyPersistService upon async lazy persist task fail
-    */
-   public void onFailLazyPersist(String bpId, long blockId);
+  /**
+   * Callback from RamDiskAsyncLazyPersistService upon async lazy persist task fail
+   */
+  public void onFailLazyPersist(String bpId, long blockId);
 
-    /**
-     * Move block from one storage to another storage
-     */
-    public ReplicaInfo moveBlockAcrossStorage(final ExtendedBlock block,
-        StorageType targetStorageType) throws IOException;
+  /**
+   * Move block from one storage to another storage
+   */
+  public ReplicaInfo moveBlockAcrossStorage(final ExtendedBlock block,
+                                            StorageType targetStorageType) throws IOException;
 
   /**
    * Set a block to be pinned on this datanode so that it cannot be moved
@@ -546,9 +546,12 @@ public interface FsDatasetSpi<V extends FsVolumeSpi> extends FSDatasetMBean {
    * Check whether the block was pinned
    */
   public boolean getPinning(ExtendedBlock block) throws IOException;
-  
+
   /**
    * Confirm whether the block is deleting
    */
   public boolean isDeletingBlock(String bpid, long blockId);
+
+  Set<? extends Replica> deepCopyReplica(String bpid) throws IOException;
+
 }

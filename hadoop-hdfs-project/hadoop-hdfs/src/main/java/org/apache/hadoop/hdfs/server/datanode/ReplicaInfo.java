@@ -41,24 +41,24 @@ import com.google.common.annotations.VisibleForTesting;
  */
 @InterfaceAudience.Private
 abstract public class ReplicaInfo extends Block implements Replica {
-  
+
   /** volume where the replica belongs */
   private FsVolumeSpi volume;
-  
+
   /** directory where block & meta files belong */
-  
+
   /**
    * Base directory containing numerically-identified sub directories and
    * possibly blocks.
    */
   private File baseDir;
-  
+
   /**
    * Whether or not this replica's parent directory includes subdirs, in which
    * case we can generate them based on the replica's block ID
    */
   private boolean hasSubdirs;
-  
+
   private static final Map<String, File> internedBaseDirs = new HashMap<String, File>();
 
   /**
@@ -68,10 +68,10 @@ abstract public class ReplicaInfo extends Block implements Replica {
    * @param dir directory path where block and meta files are located
    */
   ReplicaInfo(Block block, FsVolumeSpi vol, File dir) {
-    this(block.getBlockId(), block.getNumBytes(), 
-        block.getGenerationStamp(), vol, dir);
+    this(block.getBlockId(), block.getNumBytes(),
+            block.getGenerationStamp(), vol, dir);
   }
-  
+
   /**
    * Constructor
    * @param blockId block id
@@ -81,7 +81,7 @@ abstract public class ReplicaInfo extends Block implements Replica {
    * @param dir directory path where block and meta files are located
    */
   ReplicaInfo(long blockId, long len, long genStamp,
-      FsVolumeSpi vol, File dir) {
+              FsVolumeSpi vol, File dir) {
     super(blockId, len, genStamp);
     this.volume = vol;
     setDirInternal(dir);
@@ -94,7 +94,7 @@ abstract public class ReplicaInfo extends Block implements Replica {
   ReplicaInfo(ReplicaInfo from) {
     this(from, from.getVolume(), from.getDir());
   }
-  
+
   /**
    * Get the full path of this replica's data file
    * @return the full path of this replica's data file
@@ -102,16 +102,16 @@ abstract public class ReplicaInfo extends Block implements Replica {
   public File getBlockFile() {
     return new File(getDir(), getBlockName());
   }
-  
+
   /**
    * Get the full path of this replica's meta file
    * @return the full path of this replica's meta file
    */
   public File getMetaFile() {
     return new File(getDir(),
-        DatanodeUtil.getMetaName(getBlockName(), getGenerationStamp()));
+            DatanodeUtil.getMetaName(getBlockName(), getGenerationStamp()));
   }
-  
+
   /**
    * Get the volume where this replica is located on disk
    * @return the volume where this replica is located on disk
@@ -119,7 +119,7 @@ abstract public class ReplicaInfo extends Block implements Replica {
   public FsVolumeSpi getVolume() {
     return volume;
   }
-  
+
   /**
    * Set the volume where this replica is located on disk
    */
@@ -134,14 +134,14 @@ abstract public class ReplicaInfo extends Block implements Replica {
   public String getStorageUuid() {
     return volume.getStorageID();
   }
-  
+
   /**
    * Return the parent directory path where this replica is located
    * @return the parent directory path where this replica is located
    */
   File getDir() {
     return hasSubdirs ? DatanodeUtil.idToBlockDir(baseDir,
-        getBlockId()) : baseDir;
+            getBlockId()) : baseDir;
   }
 
   /**
@@ -160,7 +160,7 @@ abstract public class ReplicaInfo extends Block implements Replica {
 
     ReplicaDirInfo dirInfo = parseBaseDir(dir);
     this.hasSubdirs = dirInfo.hasSubidrs;
-    
+
     synchronized (internedBaseDirs) {
       if (!internedBaseDirs.containsKey(dirInfo.baseDirPath)) {
         // Create a new String path of this file and make a brand new File object
@@ -182,17 +182,17 @@ abstract public class ReplicaInfo extends Block implements Replica {
       this.hasSubidrs = hasSubidrs;
     }
   }
-  
+
   @VisibleForTesting
   public static ReplicaDirInfo parseBaseDir(File dir) {
-    
+
     File currentDir = dir;
     boolean hasSubdirs = false;
     while (currentDir.getName().startsWith(DataStorage.BLOCK_SUBDIR_PREFIX)) {
       hasSubdirs = true;
       currentDir = currentDir.getParentFile();
     }
-    
+
     return new ReplicaDirInfo(currentDir.getAbsolutePath(), hasSubdirs);
   }
 
@@ -218,8 +218,8 @@ abstract public class ReplicaInfo extends Block implements Replica {
   public long getBytesReserved() {
     return 0;
   }
-  
-   /**
+
+  /**
    * Copy specified file into a temporary file. Then rename the
    * temporary file to the original name. This will cause any
    * hardlinks to the original file to be removed. The temporary
@@ -242,15 +242,15 @@ abstract public class ReplicaInfo extends Block implements Replica {
       }
       if (file.length() != tmpFile.length()) {
         throw new IOException("Copy of file " + file + " size " + file.length()+
-                              " into file " + tmpFile +
-                              " resulted in a size of " + tmpFile.length());
+                " into file " + tmpFile +
+                " resulted in a size of " + tmpFile.length());
       }
       FileUtil.replaceFile(tmpFile, file);
     } catch (IOException e) {
       boolean done = tmpFile.delete();
       if (!done) {
         DataNode.LOG.info("detachFile failed to delete temporary file " +
-                          tmpFile);
+                tmpFile);
       }
       throw e;
     }
@@ -288,17 +288,21 @@ abstract public class ReplicaInfo extends Block implements Replica {
   @Override  //Object
   public String toString() {
     return getClass().getSimpleName()
-        + ", " + super.toString()
-        + ", " + getState()
-        + "\n  getNumBytes()     = " + getNumBytes()
-        + "\n  getBytesOnDisk()  = " + getBytesOnDisk()
-        + "\n  getVisibleLength()= " + getVisibleLength()
-        + "\n  getVolume()       = " + getVolume()
-        + "\n  getBlockFile()    = " + getBlockFile();
+            + ", " + super.toString()
+            + ", " + getState()
+            + "\n  getNumBytes()     = " + getNumBytes()
+            + "\n  getBytesOnDisk()  = " + getBytesOnDisk()
+            + "\n  getVisibleLength()= " + getVisibleLength()
+            + "\n  getVolume()       = " + getVolume()
+            + "\n  getBlockFile()    = " + getBlockFile();
   }
 
   @Override
   public boolean isOnTransientStorage() {
     return volume.isTransientStorage();
+  }
+
+  public long getMetadataLength(){
+    return getMetaFile().length();
   }
 }
