@@ -23,7 +23,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
@@ -32,12 +31,11 @@ import java.io.Writer;
 import java.util.Scanner;
 import org.apache.hadoop.fs.GetSpaceUsed;
 import org.apache.hadoop.fs.CachingGetSpaceUsed;
-import org.apache.hadoop.fs.CommonConfigurationKeys;
+import org.apache.hadoop.hdfs.server.datanode.FSCachingGetSpaceUsed;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.DU;
 import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.hdfs.DFSConfigKeys;
 import org.apache.hadoop.hdfs.protocol.Block;
@@ -142,7 +140,7 @@ class BlockPoolSlice {
     // Use cached value initially if available. Or the following call will
     // block until the initial du command completes.
     this.duCacheFile = new File(currentDir, DU_CACHE_FILE);
-    this.dfsUsage = new org.apache.hadoop.hdfs.server.datanode.FSCachingGetSpaceUsed.Builder().setBpid(bpid).setVolume(volume)
+    this.dfsUsage = new FSCachingGetSpaceUsed.Builder().setBpid(bpid).setVolume(volume)
             .setDuCacheFile(duCacheFile)
             .setPath(bpDir)
             .setConf(conf)
