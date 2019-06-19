@@ -107,6 +107,7 @@ class PendingReconstructionBlocks {
       if (found != null) {
         LOG.debug("Removing pending reconstruction for {}", block);
         found.decrementReplicas(dn);
+        LOG.info("CJMODIFY-found.getNumReplicas is: " + found.getNumReplicas());
         if (found.getNumReplicas() <= 0) {
           pendingReconstructions.remove(block);
           removed = true;
