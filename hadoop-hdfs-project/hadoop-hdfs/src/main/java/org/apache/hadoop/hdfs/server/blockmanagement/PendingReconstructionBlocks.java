@@ -82,6 +82,7 @@ class PendingReconstructionBlocks {
    */
   void increment(BlockInfo block, DatanodeDescriptor... targets) {
     synchronized (pendingReconstructions) {
+      LOG.info("CJMODIFY block isStripedBlockID " + BlockIdManager.isStripedBlockID(block.getBlockId()) + " " + block);
       PendingBlockInfo found = pendingReconstructions.get(block);
       if (found == null) {
         pendingReconstructions.put(block, new PendingBlockInfo(targets));
