@@ -82,7 +82,6 @@ class PendingReconstructionBlocks {
    */
   void increment(BlockInfo block, DatanodeDescriptor... targets) {
     synchronized (pendingReconstructions) {
-      LOG.info("CJMODIFY block isStripedBlockID " + BlockIdManager.isStripedBlockID(block.getBlockId()) + " " + block);
       PendingBlockInfo found = pendingReconstructions.get(block);
       if (found == null) {
         pendingReconstructions.put(block, new PendingBlockInfo(targets));
@@ -116,6 +115,31 @@ class PendingReconstructionBlocks {
         }
       }else{
         LOG.info("CJMODIFY  pendingReconstructions get null" + block);
+      }
+    }
+    return removed;
+  }
+
+  boolean decrement2(BlockInfo blockInfo, Block block, DatanodeDescriptor dn) {
+    boolean removed = false;
+    synchronized (pendingReconstructions) {
+      PendingBlockInfo found = pendingReconstructions.get(blockInfo);
+
+      if (found != null) {
+        LOG.debug("Removing pending reconstruction for {}", blockInfo);
+        found.decrementReplicas(dn);
+        LOG.info("CJMODIFY found.getNumReplicas is: " + found.getNumReplicas());
+        if (found.getNumReplicas() <= 0) {
+          pendingReconstructions.remove(blockInfo);
+          removed = true;
+        }
+      }else{
+        found = pendingReconstructions.get(block);
+        if(found != null){
+          LOG.info("CJMODIFY  pendingReconstructions get not null" + found);
+        }else{
+          LOG.info("CJMODIFY  pendingReconstructions get null" + blockInfo);
+        }
       }
     }
     return removed;

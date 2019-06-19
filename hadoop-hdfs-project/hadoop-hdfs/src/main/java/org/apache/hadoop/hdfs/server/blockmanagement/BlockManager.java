@@ -3901,7 +3901,7 @@ public class BlockManager implements BlockStatsMXBean {
     //CJMODIFY end
     if (storedBlock != null &&
         block.getGenerationStamp() == storedBlock.getGenerationStamp()) {
-      if (pendingReconstruction.decrement(storedBlock, node)) {
+      if (pendingReconstruction.decrement2(storedBlock, block, node)) {
         NameNode.getNameNodeMetrics().incSuccessfulReReplications();
       }
     }
@@ -4278,20 +4278,16 @@ public class BlockManager implements BlockStatsMXBean {
 
   public BlockInfo getStoredBlock(Block block) {
     if (!BlockIdManager.isStripedBlockID(block.getBlockId())) {
-      LOG.info("CJMODIFY getStoredBlock 1 " + block);
       return blocksMap.getStoredBlock(block);
     }
     if (!hasNonEcBlockUsingStripedID) {
-      LOG.info("CJMODIFY getStoredBlock 2 " + block);
       return blocksMap.getStoredBlock(
           new Block(BlockIdManager.convertToStripedID(block.getBlockId())));
     }
     BlockInfo info = blocksMap.getStoredBlock(block);
     if (info != null) {
-      LOG.info("CJMODIFY getStoredBlock 3 " + block);
       return info;
     }
-    LOG.info("CJMODIFY getStoredBlock 4 " + block);
     return blocksMap.getStoredBlock(
         new Block(BlockIdManager.convertToStripedID(block.getBlockId())));
   }
