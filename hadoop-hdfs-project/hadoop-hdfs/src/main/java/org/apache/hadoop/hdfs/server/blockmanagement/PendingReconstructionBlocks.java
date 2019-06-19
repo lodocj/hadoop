@@ -104,14 +104,17 @@ class PendingReconstructionBlocks {
     boolean removed = false;
     synchronized (pendingReconstructions) {
       PendingBlockInfo found = pendingReconstructions.get(block);
+
       if (found != null) {
         LOG.debug("Removing pending reconstruction for {}", block);
         found.decrementReplicas(dn);
-        LOG.info("CJMODIFY-found.getNumReplicas is: " + found.getNumReplicas());
+        LOG.info("CJMODIFY found.getNumReplicas is: " + found.getNumReplicas());
         if (found.getNumReplicas() <= 0) {
           pendingReconstructions.remove(block);
           removed = true;
         }
+      }else{
+        LOG.info("CJMODIFY  pendingReconstructions get null" + block);
       }
     }
     return removed;
