@@ -814,4 +814,11 @@ public class DFSConfigKeys extends CommonConfigurationKeys {
     "dfs.datanode.block-pinning.enabled";
   public static final boolean DFS_DATANODE_BLOCK_PINNING_ENABLED_DEFAULT =
     false;
+
+  // webhdfs connection opt
+  public static final String  DFS_WEBHDFS_SOCKET_CONNECT_TIMEOUT_KEY = "dfs.webhdfs.socket.connect-timeout";
+  public static final int     DFS_WEBHDFS_SOCKET_CONNECT_TIMEOUT_KEY_DEFAULT = 1 * 60 * 1000;
+//  public static final String  DFS_WEBHDFS_SOCKET_READ_TIMEOUT_KEY = "dfs.webhdfs.socket.read-timeout";
+//  public static final int     DFS_WEBHDFS_SOCKET_READ_TIMEOUT_KEY_DEFAULT = 60000;
+
 }
