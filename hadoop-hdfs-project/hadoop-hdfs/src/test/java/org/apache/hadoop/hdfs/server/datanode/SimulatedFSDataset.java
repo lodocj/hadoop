@@ -1328,5 +1328,10 @@ public class SimulatedFSDataset implements FsDatasetSpi<FsVolumeSpi> {
   public boolean isDeletingBlock(String bpid, long blockId) {
     throw new UnsupportedOperationException();
   }
+
+  @Override
+  public Set<? extends Replica> deepCopyReplica(String bpid) throws IOException {
+    return null;
+  }
 }
 
