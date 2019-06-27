@@ -65,10 +65,13 @@ class ErasureCodingWork extends BlockReconstructionWork {
   private void logReplBlockSrcAndDest(DatanodeStorageInfo[] chosenTargets) {
     long tid = Thread.currentThread().getId();
     Iterator<DatanodeStorageInfo> currStorageInfos = getBlock().getStorageInfos();
+
+    BlockManager.LOG.debug("CJMODIFY {} block state: {}, replication", getBlock().getBlockUCState(), getBlock().getReplication());
+
     while (currStorageInfos.hasNext()){
       DatanodeStorageInfo dsInfo = currStorageInfos.next();
-      BlockManager.LOG.debug("CJMODIFY {} block {} choose targets, src node: {}, src storage: {}", tid,
-              getBlock().getBlockId(), dsInfo.getDatanodeDescriptor().getHostName(), dsInfo);
+      BlockManager.LOG.debug("CJMODIFY {} block {} choose targets, src node: {}, src storage: {}, state: {}", tid,
+              getBlock().getBlockId(), dsInfo.getDatanodeDescriptor().getHostName(), dsInfo, dsInfo.getState());
     }
 
     for(DatanodeStorageInfo info : chosenTargets){
