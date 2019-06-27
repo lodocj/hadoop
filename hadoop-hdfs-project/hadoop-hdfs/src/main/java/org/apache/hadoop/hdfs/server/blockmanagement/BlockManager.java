@@ -3892,17 +3892,17 @@ public class BlockManager implements BlockStatsMXBean {
     // Modify the blocks->datanode map and node's map.
     //
     BlockInfo storedBlock = getStoredBlock(block);
-    // CJMODIFY start
-    if(storedBlock != null){
-      LOG.info("CJMODIFY block info:" + block);
-      LOG.info("CJMODIFY storedBlock info:" + storedBlock);
-    }else{
-      LOG.info("CJMODIFY storedBlock is null, block info:" + block);
-    }
-    //CJMODIFY end
+//    // CJMODIFY start
+//    if(storedBlock != null){
+//      LOG.info("CJMODIFY block info:" + block);
+//      LOG.info("CJMODIFY storedBlock info:" + storedBlock);
+//    }else{
+//      LOG.info("CJMODIFY storedBlock is null, block info:" + block);
+//    }
+//    //CJMODIFY end
     if (storedBlock != null &&
         block.getGenerationStamp() == storedBlock.getGenerationStamp()) {
-      if (pendingReconstruction.decrement2(storedBlock, block, node)) {
+      if (pendingReconstruction.decrement(storedBlock, node)) {
         NameNode.getNameNodeMetrics().incSuccessfulReReplications();
       }
     }
