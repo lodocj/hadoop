@@ -33,6 +33,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hdfs.DFSConfigKeys;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.security.authentication.client.AuthenticatedURL;
 import org.apache.hadoop.security.authentication.client.AuthenticationException;
@@ -78,7 +79,10 @@ public class URLConnectionFactory {
   public static URLConnectionFactory newDefaultURLConnectionFactory(Configuration conf) {
     ConnectionConfigurator conn = null;
     try {
-      conn = newSslConnConfigurator(DEFAULT_SOCKET_TIMEOUT, conf);
+      int timeout = conf.getInt(
+              DFSConfigKeys.DFS_WEBHDFS_SOCKET_CONNECT_TIMEOUT_KEY,
+              DFSConfigKeys.DFS_WEBHDFS_SOCKET_CONNECT_TIMEOUT_KEY_DEFAULT);
+      conn = newSslConnConfigurator(timeout, conf);
     } catch (Exception e) {
       LOG.debug(
           "Cannot load customized ssl related configuration. Fallback to system-generic settings.",
