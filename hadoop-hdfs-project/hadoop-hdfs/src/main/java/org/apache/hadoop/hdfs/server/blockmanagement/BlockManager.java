@@ -2528,13 +2528,14 @@ public class BlockManager implements BlockStatsMXBean {
         blockReportLeaseManager.removeLease(node);
         return !node.hasStaleStorages();
       }
+      //判断DN是否分配有lease，该lease主要用来进行DN report block流控
       if (context != null) {
         if (!blockReportLeaseManager.checkLease(node, startTime,
               context.getLeaseId())) {
           return false;
         }
       }
-
+      //区分该上报的STORAGE是否第一次上报
       if (storageInfo.getBlockReportCount() == 0) {
         // The first block report can be processed a lot more efficiently than
         // ordinary block reports.  This shortens restart times.
@@ -4133,6 +4134,7 @@ public class BlockManager implements BlockStatsMXBean {
       StoredReplicaState state = checkReplicaOnStorage(counters, block,
           si.getStorage(), nodesCorrupt, inStartupSafeMode);
       if (state == StoredReplicaState.LIVE) {
+        //如果已经存在，则LIVE - 1，多余的计数+1
         if (!bitSet.get(si.getBlockIndex())) {
           bitSet.set(si.getBlockIndex());
         } else {

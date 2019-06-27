@@ -19,15 +19,11 @@ package org.apache.hadoop.hdfs.server.blockmanagement;
 
 import org.apache.hadoop.hdfs.protocol.Block;
 import org.apache.hadoop.hdfs.protocol.ExtendedBlock;
+import org.apache.hadoop.hdfs.server.common.StorageInfo;
 import org.apache.hadoop.hdfs.util.StripedBlockUtil;
 import org.apache.hadoop.net.Node;
 
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 class ErasureCodingWork extends BlockReconstructionWork {
   private final byte[] liveBlockIndicies;
@@ -61,7 +57,24 @@ class ErasureCodingWork extends BlockReconstructionWork {
         getSrcPath(), getAdditionalReplRequired(), getSrcNodes()[0],
         getLiveReplicaStorages(), false, excludedNodes, getBlockSize(),
         storagePolicySuite.getPolicy(getStoragePolicyID()), null);
+    //CJMODIFY
+    logReplBlockSrcAndDest(chosenTargets);
     setTargets(chosenTargets);
+  }
+
+  private void logReplBlockSrcAndDest(DatanodeStorageInfo[] chosenTargets) {
+    long tid = Thread.currentThread().getId();
+    Iterator<DatanodeStorageInfo> currStorageInfos = getBlock().getStorageInfos();
+    while (currStorageInfos.hasNext()){
+      DatanodeStorageInfo dsInfo = currStorageInfos.next();
+      BlockManager.LOG.debug("CJMODIFY {} block {} choose targets, src node: {}, src storage: {}", tid,
+              getBlock().getBlockId(), dsInfo.getDatanodeDescriptor().getHostName(), dsInfo);
+    }
+
+    for(DatanodeStorageInfo info : chosenTargets){
+      BlockManager.LOG.debug("CJMODIFY {} block {} choose targets, dest node: {}, dest storage: {}", tid,
+              getBlock().getBlockId(), info.getDatanodeDescriptor().getHostName(), info);
+    }
   }
 
   /**
